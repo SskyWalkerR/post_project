@@ -15,25 +15,21 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { getPosts } from '../services/lib/postApi';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme();
 
 export const Post = () => {
+    const [posts, setPosts] = React.useState([]);
+    React.useEffect(() => {
+        const response =  getPosts().then(data => {
+
+            setPosts(data.data.posts)
+        }).catch(err => {
+            console.log(err)
+        })
+    },[])
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -78,8 +74,8 @@ export const Post = () => {
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
+            {posts.map((post) => (
+              <Grid item key={post} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
@@ -94,11 +90,10 @@ export const Post = () => {
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Heading
+                      {post.title}
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe the
-                      content.
+                      {post.body}
                     </Typography>
                   </CardContent>
                   <CardActions>
@@ -124,7 +119,6 @@ export const Post = () => {
         >
           Something here to give the footer a purpose!
         </Typography>
-        <Copyright />
       </Box>
       {/* End footer */}
     </ThemeProvider>
