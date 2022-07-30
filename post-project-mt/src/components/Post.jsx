@@ -17,13 +17,14 @@ import Modal from '@mui/material/Modal';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getPosts, deletePost } from '../services/lib/postApi';
+import { CreatePost } from './CreatePost';
 
 
 const theme = createTheme();
 
 export const Post = () => {
     const [posts, setPosts] = React.useState([]);
-    const [openModal, setOpenModal] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
     React.useEffect(() => {
         const response =  getPosts().then(data => {
 
@@ -44,9 +45,9 @@ export const Post = () => {
         })
     }
 
-    const handleModal = () => {
-        setOpenModal(!openModal);
-    }
+  
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
 
   return (
@@ -85,8 +86,10 @@ export const Post = () => {
               spacing={2}
               justifyContent="center"
             >
-              <Button variant="contained" onClick={handleModal}>Create a new post</Button>
-              
+              <Button variant="contained" onClick={handleOpen}>Create a new post</Button>
+              {open && (
+                <CreatePost open={open} handleClose={handleClose} />
+              )}
               {/* <Button variant="outlined">Secondary action</Button> */}
             </Stack>
           </Container>
