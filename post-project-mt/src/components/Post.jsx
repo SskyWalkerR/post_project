@@ -21,6 +21,7 @@ import { CreatePost } from './CreatePost';
 import { EditPost } from './EditPost';
 import { ViewPost } from './ViewPost';
 import { fetchPost } from './utils';
+// import Pagination from './Pagination';
 
 
 const theme = createTheme();
@@ -31,6 +32,8 @@ export const Post = () => {
     const [openEdit, setOpenEdit] = React.useState(false);
     const [openView, setOpenView] = React.useState(false);
     const [editData, setEditData] = React.useState({});
+    // const [currentPage, setCurrentPage] = React.useState(1);
+    // const [postPerPage, setPostPerPage] = React.useState(10);
     React.useEffect(() => { 
         getPosts().then(data => {
             setPosts(data.data.posts)
@@ -38,6 +41,10 @@ export const Post = () => {
             console.log(err)
         })
     },[])
+
+    // const indexOfLastPost = currentPage * postPerPage;
+    // const indexOfFirstPost = indexOfLastPost - postPerPage;
+    // const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
     const getPostFunction = () => {
       

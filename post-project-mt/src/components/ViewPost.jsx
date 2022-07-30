@@ -17,7 +17,6 @@ const style = {
 };
 
 export const  ViewPost = ({open, handleClose, setPosts, posts, editData}) => {
-    console.log(editData, 'viewData')
   return (
     <div>
       <Modal
