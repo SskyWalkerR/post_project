@@ -1,8 +1,11 @@
 import logo from "./logo.svg";
 import "./App.css";
+import Posts from "./pages/Posts";
 
 function App() {
-  return <>HALLO</>;
+  return (
+    <Posts/>
+  )
 }
 
 export default App;
