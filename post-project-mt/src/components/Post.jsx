@@ -19,6 +19,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getPosts, deletePost, getPost } from '../services/lib/postApi';
 import { CreatePost } from './CreatePost';
 import { EditPost } from './EditPost';
+import { ViewPost } from './ViewPost';
+import { fetchPost } from './utils';
 
 
 const theme = createTheme();
@@ -27,6 +29,7 @@ export const Post = () => {
     const [posts, setPosts] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [openEdit, setOpenEdit] = React.useState(false);
+    const [openView, setOpenView] = React.useState(false);
     const [editData, setEditData] = React.useState({});
     React.useEffect(() => { 
         getPosts().then(data => {
@@ -35,6 +38,10 @@ export const Post = () => {
             console.log(err)
         })
     },[])
+
+    const getPostFunction = () => {
+      
+    }
 
     const deleteCurrentPost =async (id) => {
         deletePost(id).then(data => {
@@ -59,24 +66,41 @@ export const Post = () => {
     const handleOpenEdit = () => setOpenEdit(true);
     const handleCloseEdit = () => setOpenEdit(false);
 
-    const handleEdit = (id) => {
-        getPost(id).then(response => {
-            setEditData(response.data)
-            handleOpenEdit();
-        }).catch(err => {
-            console.log(err)
-            if(err.response.data.message === "Post with id 'undefined' not found"){
-              posts.filter(post => {
-                  if(post.id == id) {
-                      setEditData(post)
-                      handleOpenEdit();
-                  }
-              })
+    const handleOpenView = () => setOpenView(true);
+    const handleCloseView = () => setOpenView(false);
+
+    const handleEdit = async(id) => {
+      const {response} = await fetchPost(id) 
+      if(response.status === 200) {
+        setEditData(response.data)
+        handleOpenEdit();
+      }
+      if(response === "Post with id 'undefined' not found"){
+        posts.filter(post => {
+          if(post.id == id) {
+              setEditData(post)
+              handleOpenEdit();
           }
-        })
-        
-        
+          })
+        }
     }
+
+    const handleView = async(id) => {
+      const {response} = await fetchPost(id) 
+      if(response.status === 200) {
+        setEditData(response.data)
+        handleOpenView();
+      }
+      if(response === "Post with id 'undefined' not found"){
+        posts.filter(post => {
+          if(post.id == id) {
+              setEditData(post)
+              handleOpenView();
+          }
+          })
+        }
+    }
+    
 
 
   return (
@@ -114,6 +138,9 @@ export const Post = () => {
               {openEdit && (
                 <EditPost open={openEdit} handleClose={handleCloseEdit} setPosts={setPosts} posts={posts} editData={editData}/>
               )}
+              {openView && (
+                <ViewPost open={openView} handleClose={handleCloseView} setPosts={setPosts} posts={posts} editData={editData}/>
+              )}
               {/* <Button variant="outlined">Secondary action</Button> */}
             </Stack>
           </Container>
@@ -135,7 +162,7 @@ export const Post = () => {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">View</Button>
+                    <Button size="small" onClick={() => handleView(post.id)}>View</Button>
                     <Button size="small" onClick={() => handleEdit(post.id)}>Edit</Button>
                     <Button size="small" onClick={() => deleteCurrentPost(post.id)}>Delete</Button>
                   </CardActions>

@@ -23,3 +23,7 @@ export const getPostComment = (id) => {
 export const deletePost = (id) => {
   return publicAxiosClient.delete(`/posts/${id}`);
 };
+
+export const getComments = (id) => {
+  return publicAxiosClient.delete(`/posts/${id}`);
+};
