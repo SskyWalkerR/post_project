@@ -1,66 +1,59 @@
 import React from 'react';
-import { useFormik } from 'formik';
+import { useFormik,Field } from 'formik';
 import * as Yup from 'yup';
+import { v4 as uuidv4 } from 'uuid';
+import TextField from '@mui/material/TextField';
+import { createPost } from '../services/lib/postApi';
 
 export const Form = () => {
   const formik = useFormik({
     initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
+        title: ''
     },
     validationSchema: Yup.object({
-      firstName: Yup.string()
-        .max(15, 'Must be 15 characters or less')
+        title: Yup.string()
         .required('Required'),
-      lastName: Yup.string()
-        .max(20, 'Must be 20 characters or less')
+        body: Yup.string()
         .required('Required'),
-      email: Yup.string().email('Invalid email address').required('Required'),
     }),
     onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
+        const data = {
+            ...values
+        }
+        data.userId = 5
+        createPost(data).then(data => {
+            console.log(data.data)
+        }).catch(err => {
+            console.log(err)
+        })
     },
   });
   return (
     <form onSubmit={formik.handleSubmit}>
-      <label htmlFor="firstName">First Name</label>
-      <input
-        id="firstName"
-        name="firstName"
-        type="text"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.firstName}
+      <TextField
+         id='title'
+         name='title'
+         type='text'
+         onChange={formik.handleChange}
+         onBlur={formik.handleBlur}
+         value={formik.values.title}
+         label='New Post'
       />
-      {formik.touched.firstName && formik.errors.firstName ? (
-        <div>{formik.errors.firstName}</div>
+      {formik.touched.title && formik.errors.title ? (
+        <div>{formik.errors.title}</div>
       ) : null}
 
-      <label htmlFor="lastName">Last Name</label>
-      <input
-        id="lastName"
-        name="lastName"
-        type="text"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.lastName}
+      <TextField
+         id='body'
+         name='body'
+         type='text'
+         onChange={formik.handleChange}
+         onBlur={formik.handleBlur}
+         value={formik.values.body}
+         label='Body of Post'
       />
-      {formik.touched.lastName && formik.errors.lastName ? (
-        <div>{formik.errors.lastName}</div>
-      ) : null}
-
-      <label htmlFor="email">Email Address</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.email}
-      />
-      {formik.touched.email && formik.errors.email ? (
-        <div>{formik.errors.email}</div>
+      {formik.touched.body && formik.errors.body ? (
+        <div>{formik.errors.body}</div>
       ) : null}
 
       <button type="submit">Submit</button>
