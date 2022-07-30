@@ -8,6 +8,14 @@ export const getPost = (id) => {
   return publicAxiosClient.get(`/posts/${id}`);
 };
 
+export const createPost = (data) => {
+  return publicAxiosClient.post(`/posts/add`, data);
+};
+
 export const getPostComment = (id) => {
   return publicAxiosClient.get(`/posts/${id}/comments`);
+};
+
+export const deletePost = (id) => {
+  return publicAxiosClient.delete(`/posts/${id}`);
 };
