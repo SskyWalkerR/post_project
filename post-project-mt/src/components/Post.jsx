@@ -16,7 +16,7 @@ import Container from '@mui/material/Container';
 import Modal from '@mui/material/Modal';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getPosts, deletePost } from '../services/lib/postApi';
+import { getPosts, deletePost, getPost } from '../services/lib/postApi';
 import { CreatePost } from './CreatePost';
 import { EditPost } from './EditPost';
 
@@ -27,7 +27,7 @@ export const Post = () => {
     const [posts, setPosts] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [openEdit, setOpenEdit] = React.useState(false);
-    const [editData, setEditData] = React.useState('');
+    const [editData, setEditData] = React.useState({});
     React.useEffect(() => { 
         getPosts().then(data => {
             setPosts(data.data.posts)
@@ -60,22 +60,28 @@ export const Post = () => {
     const handleCloseEdit = () => setOpenEdit(false);
 
     const handleEdit = (id) => {
-        handleOpenEdit();
-        setEditData(id)
+        getPost(id).then(response => {
+            setEditData(response.data)
+            handleOpenEdit();
+        }).catch(err => {
+            console.log(err)
+            if(err.response.data.message === "Post with id 'undefined' not found"){
+              posts.filter(post => {
+                  if(post.id == id) {
+                      setEditData(post)
+                      handleOpenEdit();
+                  }
+              })
+          }
+        })
+        
+        
     }
 
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="relative">
-        <Toolbar>
-          <CameraIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" color="inherit" noWrap>
-            Posts
-          </Typography>
-        </Toolbar>
-      </AppBar>
       <main>
         {/* Hero unit */}
         <Box
@@ -106,7 +112,7 @@ export const Post = () => {
                 <CreatePost open={open} handleClose={handleClose} setPosts={setPosts} posts={posts}/>
               )}
               {openEdit && (
-                <EditPost open={openEdit} handleClose={handleCloseEdit} setPosts={setPosts} posts={posts} id={editData}/>
+                <EditPost open={openEdit} handleClose={handleCloseEdit} setPosts={setPosts} posts={posts} editData={editData}/>
               )}
               {/* <Button variant="outlined">Secondary action</Button> */}
             </Stack>
@@ -120,15 +126,6 @@ export const Post = () => {
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      // 16:9
-                      pt: '56.25%',
-                    }}
-                    image="https://source.unsplash.com/random"
-                    alt="random"
-                  />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
                       {post.title}

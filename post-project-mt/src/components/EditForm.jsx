@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormik,Field } from 'formik';
 import * as Yup from 'yup';
 import { v4 as uuidv4 } from 'uuid';
 import TextField from '@mui/material/TextField';
-import { createPost } from '../services/lib/postApi';
+import { createPost, getPost, updatePost } from '../services/lib/postApi';
 import { Button } from '@mui/material';
 import Error from './Error';
 
-export const EditForm = ({setPosts, posts, handleClose}) => {
+export const EditForm = ({setPosts, posts, handleClose, id, editData}) => {
   const formik = useFormik({
     initialValues: {
-        title: '',
-        body: '',
+        title: editData.title,
+        body: editData.body,
     },
     validationSchema: Yup.object({
         title: Yup.string()
@@ -24,11 +24,33 @@ export const EditForm = ({setPosts, posts, handleClose}) => {
             ...values
         }
         data.userId = 5
-        createPost(data).then(data => {
-            console.log(data.data)
-            setPosts([...posts, data.data])
+        updatePost(editData.id,data).then(response => {
+            setPosts(posts.map(post => {
+                if(post.id == editData.id) {
+                    console.log('inside if')
+                    return {
+                        ...post,
+                        title:response.data.title,
+                        body:response.data.body
+                    }
+                }
+                return post
+            }))
             handleClose()
         }).catch(err => {
+            if(err.response.data.message === "Post with id 'undefined' not found"){
+                setPosts(posts.map(post => {
+                    if(post.id == editData.id) {
+                        return {
+                            ...post,
+                            title:data.title,
+                            body:data.body
+                        }
+                    }
+                    handleClose()
+                    return post
+                }))
+            }
             console.log(err)
         })
     },

@@ -2,6 +2,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { Form } from './Form';
+import { EditForm } from './EditForm';
+import { getPost } from '../services/lib/postApi';
 
 const style = {
   position: 'absolute',
@@ -15,7 +17,7 @@ const style = {
   p: 4,
 };
 
-export const EditPost = ({open, handleClose, setPosts, posts, id}) => {
+export const EditPost = ({open, handleClose, setPosts, posts, editData}) => {
   return (
     <div>
       <Modal
@@ -25,6 +27,7 @@ export const EditPost = ({open, handleClose, setPosts, posts, id}) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+            <EditForm setPosts={setPosts} posts={posts} handleClose={handleClose} editData={editData}/>
           {/* <Form setPosts={setPosts} posts={posts} handleClose={handleClose}/> */}
         </Box>
       </Modal>

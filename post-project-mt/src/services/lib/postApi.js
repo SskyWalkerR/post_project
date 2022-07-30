@@ -12,6 +12,10 @@ export const createPost = (data) => {
   return publicAxiosClient.post(`/posts/add`, data);
 };
 
+export const updatePost = (id,data) => {
+  return publicAxiosClient.put(`/posts/${id}`, data);
+};
+
 export const getPostComment = (id) => {
   return publicAxiosClient.get(`/posts/${id}/comments`);
 };
