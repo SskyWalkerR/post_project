@@ -7,7 +7,7 @@ import { createPost } from '../services/lib/postApi';
 import { Button } from '@mui/material';
 import Error from './Error';
 
-export const Form = ({setPosts, posts, handleClose}) => {
+export const EditForm = ({setPosts, posts, handleClose}) => {
   const formik = useFormik({
     initialValues: {
         title: '',

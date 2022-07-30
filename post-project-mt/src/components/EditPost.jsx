@@ -15,8 +15,7 @@ const style = {
   p: 4,
 };
 
-export const  CreatePost = ({open, handleClose, setPosts, posts}) => {
-
+export const EditPost = ({open, handleClose, setPosts, posts, id}) => {
   return (
     <div>
       <Modal
@@ -26,7 +25,7 @@ export const  CreatePost = ({open, handleClose, setPosts, posts}) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Form setPosts={setPosts} posts={posts} handleClose={handleClose}/>
+          {/* <Form setPosts={setPosts} posts={posts} handleClose={handleClose}/> */}
         </Box>
       </Modal>
     </div>

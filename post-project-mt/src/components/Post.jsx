@@ -18,6 +18,7 @@ import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getPosts, deletePost } from '../services/lib/postApi';
 import { CreatePost } from './CreatePost';
+import { EditPost } from './EditPost';
 
 
 const theme = createTheme();
@@ -25,9 +26,10 @@ const theme = createTheme();
 export const Post = () => {
     const [posts, setPosts] = React.useState([]);
     const [open, setOpen] = React.useState(false);
-    React.useEffect(() => {
-        const response =  getPosts().then(data => {
-
+    const [openEdit, setOpenEdit] = React.useState(false);
+    const [editData, setEditData] = React.useState('');
+    React.useEffect(() => { 
+        getPosts().then(data => {
             setPosts(data.data.posts)
         }).catch(err => {
             console.log(err)
@@ -41,13 +43,26 @@ export const Post = () => {
                 return post.id !== deletedPost.id;
             }))
         }).catch(err => {
-            console.log(err)
+            console.log(err.response.data.message)
+            if(err.response.data.message === "Post with id 'undefined' not found"){
+                setPosts(posts.filter(post => {
+                    return post.id !== id;
+                }))
+            }
         })
     }
 
   
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const handleOpenEdit = () => setOpenEdit(true);
+    const handleCloseEdit = () => setOpenEdit(false);
+
+    const handleEdit = (id) => {
+        handleOpenEdit();
+        setEditData(id)
+    }
 
 
   return (
@@ -88,7 +103,10 @@ export const Post = () => {
             >
               <Button variant="contained" onClick={handleOpen}>Create a new post</Button>
               {open && (
-                <CreatePost open={open} handleClose={handleClose} />
+                <CreatePost open={open} handleClose={handleClose} setPosts={setPosts} posts={posts}/>
+              )}
+              {openEdit && (
+                <EditPost open={openEdit} handleClose={handleCloseEdit} setPosts={setPosts} posts={posts} id={editData}/>
               )}
               {/* <Button variant="outlined">Secondary action</Button> */}
             </Stack>
@@ -121,7 +139,7 @@ export const Post = () => {
                   </CardContent>
                   <CardActions>
                     <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
+                    <Button size="small" onClick={() => handleEdit(post.id)}>Edit</Button>
                     <Button size="small" onClick={() => deleteCurrentPost(post.id)}>Delete</Button>
                   </CardActions>
                 </Card>
